@@ -2,12 +2,11 @@
 % Please edit documentation in R/DelimitedFile.R
 \name{DelimitedFile}
 \alias{DelimitedFile}
-\title{DelimitedFile class
-Class provides convenience for reading and returning basic statistics of text separated rows of a delimited data file.}
+\title{DelimitedFile is an R6 class providing convenience for reading and returning basic statistics of text separated rows of a delimited data file.}
 \description{
-The class uses the data.table::fread to read text separated rows of a file. The class
+The class uses `data.table::fread` to read text separated rows of a file. The class
 provides public methods for returning per variable names/types,  descriptive statistics. Note that
-the filename extension (such as .csv) is irrelevant. Separator detection is entirely
+the filename extension (such as `.csv`) is irrelevant. Separator detection is entirely
 driven by the file contents.  Users are able to set their own separation character with the `sep` parameter.
 }
 \author{
@@ -26,6 +25,7 @@ Rick Dean
 \item \href{#method-new}{\code{DelimitedFile$new()}}
 \item \href{#method-read}{\code{DelimitedFile$read()}}
 \item \href{#method-names}{\code{DelimitedFile$names()}}
+\item \href{#method-types}{\code{DelimitedFile$types()}}
 \item \href{#method-min_max}{\code{DelimitedFile$min_max()}}
 \item \href{#method-numeric_summary}{\code{DelimitedFile$numeric_summary()}}
 \item \href{#method-clone}{\code{DelimitedFile$clone()}}
@@ -109,18 +109,28 @@ Return the column names of the data file.
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-types"></a>}}
+\if{latex}{\out{\hypertarget{method-types}{}}}
+\subsection{Method \code{types()}}{
+Return the column types of the data file.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{DelimitedFile$types()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-min_max"></a>}}
 \if{latex}{\out{\hypertarget{method-min_max}{}}}
 \subsection{Method \code{min_max()}}{
-Return the minimum and maximum values for a specific variable(column).
+Return the minimum and maximum values of the columns.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DelimitedFile$min_max(columns)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{DelimitedFile$min_max(columns = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{columns}}{The column names of interest for min/max values}
+\item{\code{columns}}{The column names of interest for min/max values. If Null then all columns are selected.}
 }
 \if{html}{\out{</div>}}
 }
@@ -131,13 +141,13 @@ Return the minimum and maximum values for a specific variable(column).
 \subsection{Method \code{numeric_summary()}}{
 Return the numeric summary of the data file.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DelimitedFile$numeric_summary(columns)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{DelimitedFile$numeric_summary(columns = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{columns}}{The column names of interest to summarize}
+\item{\code{columns}}{The column names of interest to summarize. If Null then all numeric columns are selected.}
 }
 \if{html}{\out{</div>}}
 }

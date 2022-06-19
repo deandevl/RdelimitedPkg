@@ -1,12 +1,11 @@
 library(R6)
 library(data.table)
 
-#' DelimitedFile class
-#' Class provides convenience for reading and returning basic statistics of text separated rows of a delimited data file.
+#' DelimitedFile is an R6 class providing convenience for reading and returning basic statistics of text separated rows of a delimited data file.
 #'
-#' @description  The class uses the data.table::fread to read text separated rows of a file. The class
+#' @description  The class uses `data.table::fread` to read text separated rows of a file. The class
 #' provides public methods for returning per variable names/types,  descriptive statistics. Note that
-#' the filename extension (such as .csv) is irrelevant. Separator detection is entirely
+#' the filename extension (such as `.csv`) is irrelevant. Separator detection is entirely
 #' driven by the file contents.  Users are able to set their own separation character with the `sep` parameter.
 #'
 #' @import R6
@@ -24,6 +23,11 @@ DelimitedFile <- R6::R6Class(
     #' @description Defines the classes' public fields
     #' @param file_path A string that defines the full file path to a csv formatted file.
     initialize = function(file_path = NULL) {
+
+      if(!base::file.exists(file_path)){
+        stop("File path does not exist.")
+      }
+
       self$file_path <- file_path
     },
     #' @description Read the csv file
@@ -77,18 +81,24 @@ DelimitedFile <- R6::R6Class(
     names = function(){
       return(base::colnames(private$data_dt))
     },
-    #' @description Return the minimum and maximum values for a specific variable(column).
-    #' @param columns The column names of interest for min/max values
-    min_max = function(columns){
-      return(list(
-        "variable" = columns,
-        "min" = sapply(private$data_dt[, ..columns], min),
-        "max" = sapply(private$data_dt[, ..columns], max)
-      ))
+    #' @description  Return the column types of the data file.
+    types = function(){
+      return(lapply(private$data_dt, class))
+    },
+    #' @description Return the minimum and maximum values of the columns.
+    #' @param columns The column names of interest for min/max values. If Null then all columns are selected.
+    min_max = function(columns = NULL){
+      if(is.null(columns)){
+        columns = base::colnames(private$data_dt)
+      }
+      return(lapply(private$data_dt[, ..columns], private$get_min_max))
     },
     #' @description Return the numeric summary of the data file.
-    #' @param columns The column names of interest to summarize
-    numeric_summary = function(columns){
+    #' @param columns The column names of interest to summarize. If Null then all numeric columns are selected.
+    numeric_summary = function(columns = NULL){
+      if(is.null(columns)){
+        columns = base::colnames(private$data_dt)
+      }
       return(lapply(private$data_dt[, ..columns], private$summarize))
     }
   ),
@@ -106,6 +116,30 @@ DelimitedFile <- R6::R6Class(
             "quantile_95" = quantile(column, 0.95, names = FALSE)
           )
         )
+      }else {
+        return(
+          list(
+            "mean" = NA,
+            "var" = NA,
+            "median" = NA,
+            "min" = NA,
+            "max" = NA,
+            "quantile_95" = NA
+          )
+        )
+      }
+    },
+    get_min_max = function(column){
+      if(class(column) == "numeric"){
+        return(list(
+          "min" = min(column),
+          "max" = max(column)
+        ))
+      }else{
+        return(list(
+          "min" = NA,
+          "max" = NA
+        ))
       }
     }
   )
